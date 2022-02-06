@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="eeb2f8e4-7cef-4e17-af4e-d572d60a65d6" name="ancanda">
+        <fileTransfer accessType="SFTP" host="172.18.41.29" port="14409" sshConfigId="40505617-cf4f-414a-a4a2-24b9f9a0078f" sshConfig="root@172.18.41.29:14409 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

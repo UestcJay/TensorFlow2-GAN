@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="root@172.18.41.29:14409 password" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="ancanda">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/root/shenzhen_1_1/lkq/GANs-TensorFlow2" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@172.18.41.29:14409 password">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/root/shenzhen_1_1/lkq/TensorFlow2-GAN" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>
