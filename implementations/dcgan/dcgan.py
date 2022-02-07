@@ -1,20 +1,21 @@
 import argparse
-import os
-import numpy as np
-import math
-
-import PIL
-import time
-import tensorflow.keras.layers as layers
 import tensorflow as tf
+import glob
+# import imageio
 import matplotlib.pyplot as plt
+import numpy as np
+import os
+import PIL
+import tensorflow.keras.layers as layers
+import time
 
-
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n_epochs", type=int, default=200, help="number of epochs of training")
 parser.add_argument("--freq", type=int, default=1, help="number of epochs of saving")
-parser.add_argument("--batch_size", type=int, default=256, help="size of the batches")
+parser.add_argument("--batch_size", type=int, default=512, help="size of the batches")
 parser.add_argument("--buffer_size", type=int, default=60000, help="size of the buffers")
 parser.add_argument("--lr", type=float, default=0.0002, help="adam: learning rate")
 parser.add_argument("--n_cpu", type=int, default=8, help="number of cpu threads to use during batch generation")
@@ -25,56 +26,65 @@ parser.add_argument("--sample_interval", type=int, default=400, help="interval b
 opt = parser.parse_args()
 print(opt)
 
-img_shape = (opt.img_size, opt.img_size,opt.channels)
+img_shape = (opt.img_size, opt.img_size, opt.channels)
 
 
 
 # data load & preprocessing
 (train_x, _), (_, _) = tf.keras.datasets.mnist.load_data()
+train_x= train_x.reshape(train_x.shape[0], 28, 28, 1).astype('float32')
 train_x = (train_x - 127.5) / 127.5
-train_ds = tf.data.Dataset.from_tensor_slices(train_x).shuffle(opt.buffer_size).batch(opt.batch_size, drop_remainder=True)
+train_ds = tf.data.Dataset.from_tensor_slices(train_x).shuffle(opt.buffer_size).batch(opt.batch_size)
 num_examples_to_generate = 16
 
 # We will reuse this seed overtime (so it's easier)
 # to visualize progress in the animated GIF)
 seed = tf.random.normal([num_examples_to_generate, opt.latent_dim])
-# Loss function
-cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+
 
 
 # define discriminator
-def make_discriminaor(input_shape):
-    return tf.keras.Sequential([
-        layers.Conv2D(64, 5, strides=2, padding='same',
-                      input_shape=input_shape),
-        layers.LeakyReLU(),
-        layers.Dropout(0.3),
-        layers.Conv2D(128, 5, strides=2, padding='same'),
-        layers.LeakyReLU(),
-        layers.Dropout(0.3),
-        layers.Flatten(),
-        layers.Dense(1)
-    ])
+def make_discriminator():
+    model = tf.keras.Sequential()
+    model.add(layers.Conv2D(64, (5, 5), strides=(2, 2), padding='same',
+                            input_shape=[28, 28, 1]))
+    model.add(layers.LeakyReLU())
+    model.add(layers.Dropout(0.3))
+
+    model.add(layers.Conv2D(128, (5, 5), strides=(2, 2), padding='same'))
+    model.add(layers.LeakyReLU())
+    model.add(layers.Dropout(0.3))
+
+    model.add(layers.Flatten())
+    model.add(layers.Dense(1))
+
+    return model
 
 
 # define generator
 def make_generator(input_shape):
-    return tf.keras.Sequential([
-        layers.Dense(7*7*256, use_bias=False, input_shape=input_shape),
-        layers.BatchNormalization(),
-        layers.LeakyReLU(),
-        layers.Reshape((7, 7, 256)),
-        layers.Conv2DTranspose(
-            128, 5, strides=1, padding='same', use_bias=False),
-        layers.BatchNormalization(),
-        layers.LeakyReLU(),
-        layers.Conv2DTranspose(
-            64, 5, strides=2, padding='same', use_bias=False),
-        layers.BatchNormalization(),
-        layers.LeakyReLU(),
-        layers.Conv2DTranspose(
-            1, 5, strides=2, padding='same', use_bias=False, activation='tanh')
-    ])
+    model = tf.keras.Sequential()
+    model.add(layers.Dense(7 * 7 * 256, use_bias=False, input_shape=input_shape))
+    model.add(layers.BatchNormalization())
+    model.add(layers.LeakyReLU())
+
+    model.add(layers.Reshape((7, 7, 256)))
+    assert model.output_shape == (None, 7, 7, 256)  # Note: None is the batch size
+
+    model.add(layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False))
+    assert model.output_shape == (None, 7, 7, 128)
+    model.add(layers.BatchNormalization())
+    model.add(layers.LeakyReLU())
+
+    model.add(layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False))
+    assert model.output_shape == (None, 14, 14, 64)
+    model.add(layers.BatchNormalization())
+    model.add(layers.LeakyReLU())
+
+    model.add(layers.Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False, activation='tanh'))
+    assert model.output_shape == (None, 28, 28, 1)
+
+    return model
 
 
 def get_random_z(z_dim, batch_size):
@@ -83,8 +93,9 @@ def get_random_z(z_dim, batch_size):
 
 # Initialize generator and discriminator
 generator = make_generator((opt.latent_dim,))
-discriminator = make_discriminaor((img_shape,))
-
+discriminator = make_discriminator()
+# Loss function
+cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 
 def generator_loss(fake_output):
     return cross_entropy(tf.ones_like(fake_output), fake_output)
@@ -95,8 +106,8 @@ def discriminator_loss(real_output, fake_output):
     total_loss = real_loss + fake_loss
     return total_loss
 
-generator_optimizer = tf.keras.optimizers.Adam(opt.lr)
-discriminator_optimizer = tf.keras.optimizers.Adam(opt.lr)
+generator_optimizer = tf.keras.optimizers.Adam(opt.lr, beta_1=0.5, beta_2=0.999)
+discriminator_optimizer = tf.keras.optimizers.Adam(opt.lr, beta_1=0.5, beta_2=0.999)
 
 checkpoint_dir = './training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
