@@ -105,18 +105,26 @@ checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
                                  generator=generator,
                                  discriminator=discriminator)
 
+
 # Gradient Penalty (GP)
-def gradient_penalty(generator, real_images, fake_images):
+def gradient_penalty(generator, real_images):
     real_images = tf.cast(real_images, tf.float32)
-    fake_images = tf.cast(fake_images, tf.float32)
-    alpha = tf.random.uniform([real_images.shape[0], 1, 1, 1], 0., 1.)
-    diff = fake_images - real_images
-    inter = real_images + (alpha * diff)
+
+    def _interpolate(a):
+        beta = tf.random.uniform(tf.shape(a), 0., 1.)
+        b = a + 0.5 * tf.math.reduce_std(a) * beta
+        shape = [tf.shape(a)[0]] + [1] * (a.shape.ndims - 1)
+        alpha = tf.random.uniform(shape, 0., 1.)
+        inter = a + alpha * (b - a)
+        inter.set_shape(a.shape)
+        return inter
+
+    x = _interpolate(real_images)
     with tf.GradientTape() as tape:
-        tape.watch(inter)
-        predictions = generator(inter)
-    gradients = tape.gradient(predictions, [inter])[0]
-    slopes = tf.sqrt(tf.reduce_sum(tf.square(gradients), axis=[1, 2, 3]))
+        tape.watch(x)
+        predictions = generator(x, training=True)
+    grad = tape.gradient(predictions, x)
+    slopes = tf.norm(tf.reshape(grad, [tf.shape(grad)[0], -1]), axis=1)
     return tf.reduce_mean((slopes - 1.) ** 2)
 
 @tf.function
@@ -132,7 +140,7 @@ def train_step(images):
       gen_loss = generator_loss(fake_output)
       disc_loss = discriminator_loss(real_output, fake_output)
       # Gradient penalty
-      gp = gradient_penalty(partial(discriminator, training=True),images, generated_images)
+      gp = gradient_penalty(partial(discriminator, training=True),images)
       disc_loss += gp * lambda_gp
 
 
