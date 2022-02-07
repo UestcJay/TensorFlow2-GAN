@@ -65,6 +65,7 @@ Collection of TensorFlow2 implementations of Generative Adversarial Network vari
 
 #### Variants of GAN structure
 <img src = 'assets/etc/GAN_structure.png' height = '600px'>
+
 ## Implementations   
 ### Auxiliary Classifier GAN
 _Auxiliary Classifier Generative Adversarial Network_
