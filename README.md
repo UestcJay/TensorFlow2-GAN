@@ -46,6 +46,25 @@ Collection of TensorFlow2 implementations of Generative Adversarial Network vari
     $ cd TensorFlow2-GAN/
     $ sudo pip3 install -r requirements.txt
 
+
+
+### Lists  
+
+*Name* | *Value Function*
+:---: | :--- |
+**GAN** |  <img src = 'assets/equations/GAN.png' height = '70px'>
+**LSGAN**|  <img src = 'assets/equations/LSGAN.png' height = '70px'>
+**WGAN**|  <img src = 'assets/equations/WGAN.png' height = '105px'>
+**WGAN_GP**| <img src = 'assets/equations/WGAN_GP.png' height = '70px'>
+**DRAGAN**|  <img src = 'assets/equations/DRAGAN.png' height = '70px'>
+**CGAN**| <img src = 'assets/equations/CGAN.png' height = '70px'>
+**infoGAN**| <img src = 'assets/equations/infoGAN.png' height = '70px'>
+**ACGAN**|<img src = 'assets/equations/ACGAN.png' height = '70px'>
+**EBGAN**|<img src = 'assets/equations/EBGAN.png' height = '70px'>
+**BEGAN**|<img src = 'assets/equations/BEGAN.png' height = '105px'>  
+
+#### Variants of GAN structure
+<img src = 'assets/etc/GAN_structure.png' height = '600px'>
 ## Implementations   
 ### Auxiliary Classifier GAN
 _Auxiliary Classifier Generative Adversarial Network_
