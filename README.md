@@ -64,10 +64,6 @@ $ cd implementations/gan/
 $ python3 gan.py
 ```
 
-<p align="center">
-    <img src="assets/acgan.gif" width="360"\>
-</p>
-
 ### Adversarial Autoencoder
 _Adversarial Autoencoder_
 
@@ -113,9 +109,6 @@ Many image-to-image translation problems are ambiguous, as a single input image 
 
 [[Paper]](https://arxiv.org/abs/1711.11586) [[Code]](implementations/bicyclegan/bicyclegan.py)
 
-<p align="center">
-    <img src="assets/bicyclegan_architecture.jpg" width="800"\>
-</p>
 
 #### Run Example
 ```
@@ -125,12 +118,7 @@ $ cd ../implementations/bicyclegan/
 $ python3 bicyclegan.py
 ```
 
-<p align="center">
-    <img src="assets/bicyclegan.png" width="480"\>
-</p>
-<p align="center">
-    Various style translations by varying the latent code.
-</p>
+
 
 
 ### Boundary-Seeking GAN
@@ -178,10 +166,6 @@ $ cd implementations/cluster_gan/
 $ python3 clustergan.py
 ```
 
-<p align="center">
-    <img src="assets/cluster_gan.gif" width="360"\>
-</p>
-
 
 ### Conditional GAN
 _Conditional Generative Adversarial Nets_
@@ -200,9 +184,7 @@ $ cd implementations/cgan/
 $ python3 cgan.py
 ```
 
-<p align="center">
-    <img src="assets/cgan.gif" width="360"\>
-</p>
+
 
 ### Context-Conditional GAN
 _Semi-Supervised Learning with Context-Conditional Generative Adversarial Networks_
@@ -239,12 +221,7 @@ $ cd implementations/context_encoder/
 $ python3 context_encoder.py
 ```
 
-<p align="center">
-    <img src="assets/context_encoder.png" width="640"\>
-</p>
-<p align="center">
-    Rows: Masked | Inpainted | Original | Masked | Inpainted | Original
-</p>
+
 
 ### Coupled GAN
 _Coupled Generative Adversarial Networks_
@@ -263,12 +240,6 @@ $ cd implementations/cogan/
 $ python3 cogan.py
 ```
 
-<p align="center">
-    <img src="assets/cogan.gif" width="360"\>
-</p>
-<p align="center">
-    Generated MNIST and MNIST-M images
-</p>
 
 ### CycleGAN
 _Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks_
@@ -281,9 +252,7 @@ Image-to-image translation is a class of vision and graphics problems where the 
 
 [[Paper]](https://arxiv.org/abs/1703.10593) [[Code]](implementations/cyclegan/cyclegan.py)
 
-<p align="center">
-    <img src="http://eriklindernoren.se/images/cyclegan.png" width="640"\>
-</p>
+
 
 #### Run Example
 ```
@@ -293,12 +262,7 @@ $ cd ../implementations/cyclegan/
 $ python3 cyclegan.py --dataset_name monet2photo
 ```
 
-<p align="center">
-    <img src="assets/cyclegan.png" width="900"\>
-</p>
-<p align="center">
-    Monet to photo translations.
-</p>
+
 
 ### Deep Convolutional GAN
 _Deep Convolutional Generative Adversarial Network_
@@ -317,9 +281,6 @@ $ cd implementations/dcgan/
 $ python3 dcgan.py
 ```
 
-<p align="center">
-    <img src="assets/dcgan.gif" width="240"\>
-</p>
 
 ### DiscoGAN
 _Learning to Discover Cross-Domain Relations with Generative Adversarial Networks_
@@ -332,9 +293,6 @@ While humans easily recognize relations between data from different domains with
 
 [[Paper]](https://arxiv.org/abs/1703.05192) [[Code]](implementations/discogan/discogan.py)
 
-<p align="center">
-    <img src="http://eriklindernoren.se/images/discogan_architecture.png" width="640"\>
-</p>
 
 #### Run Example
 ```
@@ -344,14 +302,7 @@ $ cd ../implementations/discogan/
 $ python3 discogan.py --dataset_name edges2shoes
 ```
 
-<p align="center">
-    <img src="assets/discogan.png" width="480"\>
-</p>
-<p align="center">
-    Rows from top to bottom: (1) Real image from domain A (2) Translated image from <br>
-    domain A (3) Reconstructed image from domain A (4) Real image from domain B (5) <br>
-    Translated image from domain B (6) Reconstructed image from domain B
-</p>
+
 
 ### DRAGAN
 _On Convergence and Stability of GANs_
@@ -426,12 +377,6 @@ $ cd implementations/esrgan/
 $ python3 esrgan.py
 ```
 
-<p align="center">
-    <img src="assets/enhanced_superresgan.png" width="320"\>
-</p>
-<p align="center">
-    Nearest Neighbor Upsampling | ESRGAN
-</p>
 
 ### GAN
 _Generative Adversarial Network_
@@ -450,9 +395,7 @@ $ cd implementations/gan/
 $ python3 gan.py
 ```
 
-<p align="center">
-    <img src="assets/gan.gif" width="240"\>
-</p>
+
 
 ### InfoGAN
 _InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets_
@@ -471,19 +414,7 @@ $ cd implementations/infogan/
 $ python3 infogan.py
 ```
 
-<p align="center">
-    <img src="assets/infogan.gif" width="360"\>
-</p>
-<p align="center">
-    Result of varying categorical latent variable by column.
-</p>
 
-<p align="center">
-    <img src="assets/infogan.png" width="360"\>
-</p>
-<p align="center">
-    Result of varying continuous latent variable by row.
-</p>
 
 ### Least Squares GAN
 _Least Squares Generative Adversarial Networks_
@@ -522,12 +453,7 @@ $ cd ../implementations/munit/
 $ python3 munit.py --dataset_name edges2shoes
 ```
 
-<p align="center">
-    <img src="assets/munit.png" width="480"\>
-</p>
-<p align="center">
-    Results by varying the style code.
-</p>
+
 
 ### Pix2Pix
 _Unpaired Image-to-Image Translation with Conditional Adversarial Networks_
@@ -540,9 +466,7 @@ We investigate conditional adversarial networks as a general-purpose solution to
 
 [[Paper]](https://arxiv.org/abs/1611.07004) [[Code]](implementations/pix2pix/pix2pix.py)
 
-<p align="center">
-    <img src="http://eriklindernoren.se/images/pix2pix_architecture.png" width="640"\>
-</p>
+
 
 #### Run Example
 ```
@@ -552,13 +476,6 @@ $ cd ../implementations/pix2pix/
 $ python3 pix2pix.py --dataset_name facades
 ```
 
-<p align="center">
-    <img src="assets/pix2pix.png" width="480"\>
-</p>
-<p align="center">
-    Rows from top to bottom: (1) The condition for the generator (2) Generated image <br>
-    based of condition (3) The true corresponding image to the condition
-</p>
 
 ### PixelDA
 _Unsupervised Pixel-Level Domain Adaptation with Generative Adversarial Networks_
@@ -583,13 +500,7 @@ $ python3 pixelda.py
 | Naive        | 55%       |
 | PixelDA      | 95%       |
 
-<p align="center">
-    <img src="assets/pixelda.png" width="480"\>
-</p>
-<p align="center">
-    Rows from top to bottom: (1) Real images from MNIST (2) Translated images from <br>
-    MNIST to MNIST-M (3) Examples of images from MNIST-M
-</p>
+
 
 ### Relativistic GAN
 _The relativistic discriminator: a key element missing from standard GAN_
@@ -664,12 +575,7 @@ $ cd implementations/stargan/
 $ python3 stargan.py
 ```
 
-<p align="center">
-    <img src="assets/stargan.png" width="640"\>
-</p>
-<p align="center">
-    Original | Black Hair | Blonde Hair | Brown Hair | Gender Flip | Aged
-</p>
+
 
 ### Super-Resolution GAN
 _Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network_
@@ -682,9 +588,6 @@ Despite the breakthroughs in accuracy and speed of single image super-resolution
 
 [[Paper]](https://arxiv.org/abs/1609.04802) [[Code]](implementations/srgan/srgan.py)
 
-<p align="center">
-    <img src="http://eriklindernoren.se/images/superresgan.png" width="640"\>
-</p>
 
 #### Run Example
 ```
@@ -693,12 +596,6 @@ $ cd implementations/srgan/
 $ python3 srgan.py
 ```
 
-<p align="center">
-    <img src="assets/superresgan.png" width="320"\>
-</p>
-<p align="center">
-    Nearest Neighbor Upsampling | SRGAN
-</p>
 
 ### UNIT
 _Unsupervised Image-to-Image Translation Networks_
@@ -753,9 +650,6 @@ $ cd implementations/wgan_gp/
 $ python3 wgan_gp.py
 ```
 
-<p align="center">
-    <img src="assets/wgan_gp.gif" width="240"\>
-</p>
 
 ### Wasserstein GAN DIV
 _Wasserstein Divergence for GANs_
@@ -774,7 +668,3 @@ ily of Wasserstein GANs (WGANs) is considered to be state-of-the-art due to the 
 $ cd implementations/wgan_div/
 $ python3 wgan_div.py
 ```
-
-<p align="center">
-    <img src="assets/wgan_div.png" width="240"\>
-</p>
