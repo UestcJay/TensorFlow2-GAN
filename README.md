@@ -42,8 +42,8 @@ Collection of TensorFlow2 implementations of Generative Adversarial Network vari
     + [Wasserstein GAN DIV](#wasserstein-gan-div)
 
 ## Installation
-    $ git clone https://github.com/eriklindernoren/PyTorch-GAN
-    $ cd PyTorch-GAN/
+    $ git clone https://github.com/UestcJay/TensorFlow2-GAN.git
+    $ cd TensorFlow2-GAN/
     $ sudo pip3 install -r requirements.txt
 
 ## Implementations   
@@ -60,8 +60,8 @@ Synthesizing high resolution photorealistic images has been a long-standing chal
 
 #### Run Example
 ```
-$ cd implementations/acgan/
-$ python3 acgan.py
+$ cd implementations/gan/
+$ python3 gan.py
 ```
 
 <p align="center">

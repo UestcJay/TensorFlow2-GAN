@@ -1,5 +1,4 @@
-torch>=0.4.0
-torchvision
+tensorflow>=2.3.0
 matplotlib
 numpy
 scipy
