@@ -43,48 +43,41 @@ seed = tf.random.normal([num_examples_to_generate, opt.latent_dim])
 
 
 
+
 # define discriminator
-def make_discriminator():
-    model = tf.keras.Sequential()
-    model.add(layers.Conv2D(64, (5, 5), strides=(2, 2), padding='same',
-                            input_shape=[28, 28, 1]))
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(0.3))
-
-    model.add(layers.Conv2D(128, (5, 5), strides=(2, 2), padding='same'))
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(0.3))
-
-    model.add(layers.Flatten())
-    model.add(layers.Dense(1))
-
-    return model
+def make_discriminator(input_shape):
+    return tf.keras.Sequential([
+        layers.Conv2D(64, 5, strides=2, padding='same',
+                      input_shape=input_shape),
+        layers.LeakyReLU(),
+        layers.Dropout(0.3),
+        layers.Conv2D(128, 5, strides=2, padding='same'),
+        layers.LeakyReLU(),
+        layers.Dropout(0.3),
+        layers.Flatten(),
+        layers.Dense(1)
+    ])
 
 
 # define generator
 def make_generator(input_shape):
-    model = tf.keras.Sequential()
-    model.add(layers.Dense(7 * 7 * 256, use_bias=False, input_shape=input_shape))
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
+    return tf.keras.Sequential([
+        layers.Dense(7*7*256, use_bias=False, input_shape=input_shape),
+        layers.BatchNormalization(),
+        layers.LeakyReLU(),
+        layers.Reshape((7, 7, 256)),
+        layers.Conv2DTranspose(
+            128, 5, strides=1, padding='same', use_bias=False),
+        layers.BatchNormalization(),
+        layers.LeakyReLU(),
+        layers.Conv2DTranspose(
+            64, 5, strides=2, padding='same', use_bias=False),
+        layers.BatchNormalization(),
+        layers.LeakyReLU(),
+        layers.Conv2DTranspose(
+            1, 5, strides=2, padding='same', use_bias=False, activation='tanh')
+    ])
 
-    model.add(layers.Reshape((7, 7, 256)))
-    assert model.output_shape == (None, 7, 7, 256)  # Note: None is the batch size
-
-    model.add(layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False))
-    assert model.output_shape == (None, 7, 7, 128)
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-
-    model.add(layers.Conv2DTranspose(64, (5, 5), strides=(2, 2), padding='same', use_bias=False))
-    assert model.output_shape == (None, 14, 14, 64)
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-
-    model.add(layers.Conv2DTranspose(1, (5, 5), strides=(2, 2), padding='same', use_bias=False, activation='tanh'))
-    assert model.output_shape == (None, 28, 28, 1)
-
-    return model
 
 
 def get_random_z(z_dim, batch_size):
@@ -93,18 +86,14 @@ def get_random_z(z_dim, batch_size):
 
 # Initialize generator and discriminator
 generator = make_generator((opt.latent_dim,))
-discriminator = make_discriminator()
-# Loss function
-cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+discriminator = make_discriminator(img_shape)
 
 def generator_loss(fake_output):
-    return cross_entropy(tf.ones_like(fake_output), fake_output)
+    return -tf.reduce_mean(fake_output)
 
 def discriminator_loss(real_output, fake_output):
-    real_loss = cross_entropy(tf.ones_like(real_output), real_output)
-    fake_loss = cross_entropy(tf.zeros_like(fake_output), fake_output)
-    total_loss = real_loss + fake_loss
-    return total_loss
+    return tf.reduce_mean(fake_output) - tf.reduce_mean(real_output)
+
 
 generator_optimizer = tf.keras.optimizers.Adam(opt.lr, beta_1=0.5, beta_2=0.999)
 discriminator_optimizer = tf.keras.optimizers.Adam(opt.lr, beta_1=0.5, beta_2=0.999)
@@ -129,9 +118,12 @@ def train_step(images):
       gen_loss = generator_loss(fake_output)
       disc_loss = discriminator_loss(real_output, fake_output)
 
-    gradients_of_generator = gen_tape.gradient(gen_loss, generator.trainable_variables)
-    gradients_of_discriminator = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
 
+    gradients_of_discriminator = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
+    # for WGAN model all the gradients should clip to (-0.01,0.01)
+    for idx, grad in enumerate(gradients_of_discriminator):
+        gradients_of_discriminator[idx] = tf.clip_by_value(grad, -0.01, 0.01)
+    gradients_of_generator = gen_tape.gradient(gen_loss, generator.trainable_variables)
     generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
     discriminator_optimizer.apply_gradients(zip(gradients_of_discriminator, discriminator.trainable_variables))
     return gen_loss, disc_loss

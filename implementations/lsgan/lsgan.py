@@ -95,14 +95,14 @@ def get_random_z(z_dim, batch_size):
 generator = make_generator((opt.latent_dim,))
 discriminator = make_discriminator()
 # Loss function
-cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+criterion = tf.keras.losses.MeanSquaredError()
 
 def generator_loss(fake_output):
-    return cross_entropy(tf.ones_like(fake_output), fake_output)
+    return criterion(tf.ones_like(fake_output), fake_output)
 
 def discriminator_loss(real_output, fake_output):
-    real_loss = cross_entropy(tf.ones_like(real_output), real_output)
-    fake_loss = cross_entropy(tf.zeros_like(fake_output), fake_output)
+    real_loss = criterion(tf.ones_like(real_output), real_output)
+    fake_loss = criterion(tf.zeros_like(fake_output), fake_output)
     total_loss = real_loss + fake_loss
     return total_loss
 
