@@ -31,8 +31,9 @@ img_shape = (opt.img_size, opt.img_size,opt.channels)
 
 # data load & preprocessing
 (train_x, _), (_, _) = tf.keras.datasets.mnist.load_data()
+BUFFER_SIZE=train_x.shape[0]
 train_x = (train_x - 127.5) / 127.5
-train_ds = tf.data.Dataset.from_tensor_slices(train_x).shuffle(opt.buffer_size).batch(opt.batch_size, drop_remainder=True)
+train_ds = tf.data.Dataset.from_tensor_slices(train_x).shuffle(BUFFER_SIZE).batch(opt.batch_size, drop_remainder=True)
 num_examples_to_generate = 16
 
 # We will reuse this seed overtime (so it's easier)
@@ -69,7 +70,7 @@ def get_random_z(z_dim, batch_size):
 
 # Initialize generator and discriminator
 generator = make_generator((opt.latent_dim,))
-discriminator = make_discriminaor((img_shape,))
+discriminator = make_discriminaor((28*28,))
 
 
 def generator_loss(fake_output):
