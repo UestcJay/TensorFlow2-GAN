@@ -25,7 +25,7 @@ parser.add_argument("--sample_interval", type=int, default=400, help="interval b
 opt = parser.parse_args()
 print(opt)
 
-img_shape = (opt.img_size, opt.img_size,opt.channels)
+img_shape = (opt.img_size, opt.img_size, opt.channels)
 
 
 
@@ -46,7 +46,7 @@ cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 # define discriminator
 def make_discriminaor(input_shape):
     return tf.keras.Sequential([
-        # layers.Input(),
+        layers.Input((28,28,11)),
         layers.Flatten(),
         layers.Dense(256,  activation=None, input_shape=input_shape),
         layers.LeakyReLU(0.2),
