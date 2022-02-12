@@ -9,36 +9,39 @@ Collection of TensorFlow2 implementations of Generative Adversarial Network vari
   * [Installation](#installation)
   * [Implementations](#implementations)
     + [Auxiliary Classifier GAN](#auxiliary-classifier-gan)
-    + [Adversarial Autoencoder](#adversarial-autoencoder)
     + [BEGAN](#began)
-    + [BicycleGAN](#bicyclegan)
     + [Boundary-Seeking GAN](#boundary-seeking-gan)
-    + [Cluster GAN](#cluster-gan)
     + [Conditional GAN](#conditional-gan)
-    + [Context-Conditional GAN](#context-conditional-gan)
-    + [Context Encoder](#context-encoder)
-    + [Coupled GAN](#coupled-gan)
     + [CycleGAN](#cyclegan)
     + [Deep Convolutional GAN](#deep-convolutional-gan)
-    + [DiscoGAN](#discogan)
     + [DRAGAN](#dragan)
-    + [DualGAN](#dualgan)
     + [Energy-Based GAN](#energy-based-gan)
-    + [Enhanced Super-Resolution GAN](#enhanced-super-resolution-gan)
     + [GAN](#gan)
     + [InfoGAN](#infogan)
     + [Least Squares GAN](#least-squares-gan)
-    + [MUNIT](#munit)
     + [Pix2Pix](#pix2pix)
-    + [PixelDA](#pixelda)
     + [Relativistic GAN](#relativistic-gan)
     + [Semi-Supervised GAN](#semi-supervised-gan)
     + [Softmax GAN](#softmax-gan)
+    + [Wasserstein GAN](#wasserstein-gan)
+    + [Wasserstein GAN GP](#wasserstein-gan-gp)
+  * TODO
+    + [Adversarial Autoencoder](#adversarial-autoencoder)
+    + [BicycleGAN](#bicyclegan)
+    + [Cluster GAN](#cluster-gan)
+    + [Context-Conditional GAN](#context-conditional-gan)
+    + [Context Encoder](#context-encoder)
+    + [Coupled GAN](#coupled-gan)
+    + [DiscoGAN](#discogan)
+    + [DualGAN](#dualgan)
+    + [Enhanced Super-Resolution GAN](#enhanced-super-resolution-gan)
+    + [MUNIT](#munit)
+    + [PixelDA](#pixelda)
+    + [Relativistic GAN](#relativistic-gan)
+    + [Semi-Supervised GAN](#semi-supervised-gan)
     + [StarGAN](#stargan)
     + [Super-Resolution GAN](#super-resolution-gan)
     + [UNIT](#unit)
-    + [Wasserstein GAN](#wasserstein-gan)
-    + [Wasserstein GAN GP](#wasserstein-gan-gp)
     + [Wasserstein GAN DIV](#wasserstein-gan-div)
 
 ## Installation
@@ -277,9 +280,8 @@ Image-to-image translation is a class of vision and graphics problems where the 
 #### Run Example
 ```
 $ cd data/
-$ bash download_cyclegan_dataset.sh monet2photo
 $ cd ../implementations/cyclegan/
-$ python3 cyclegan.py --dataset_name monet2photo
+$ python3 cyclegan.py 
 ```
 
 
@@ -493,7 +495,7 @@ We investigate conditional adversarial networks as a general-purpose solution to
 $ cd data/
 $ bash download_pix2pix_dataset.sh facades
 $ cd ../implementations/pix2pix/
-$ python3 pix2pix.py --dataset_name facades
+$ python3 pix2pix.py
 ```
 
 
