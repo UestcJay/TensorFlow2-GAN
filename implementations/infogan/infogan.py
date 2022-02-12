@@ -27,7 +27,8 @@ opt = parser.parse_args()
 print(opt)
 
 img_shape = (opt.img_size, opt.img_size, opt.channels)
-
+len_discrete_code = 10  # categorical distribution (i.e. label)
+len_continuous_code = 2 # gaussian distribution (e.g. rotation, thickness)
 
 
 # data load & preprocessing
@@ -124,9 +125,7 @@ def get_random_z(z_dim, batch_size):
 # Initialize generator and discriminator and classifier
 g = Generator()
 d = Discriminator()
-c = Classifier(10)
-# Loss function
-cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+c = Classifier(12)
 
 def generator_loss(fake_output):
     return  tf.reduce_mean(
@@ -141,13 +140,14 @@ def discriminator_loss(real_output, fake_output):
     return total_loss
 
 
-def q_loss_fun(code_logit_real, code_logit_fake, batch_labels):
-    q_real_loss = tf.reduce_mean(
-        tf.nn.sigmoid_cross_entropy_with_logits(labels=batch_labels, logits=code_logit_real))
-    q_fake_loss = tf.reduce_mean(
-        tf.nn.sigmoid_cross_entropy_with_logits(labels=batch_labels, logits=code_logit_fake))
-    q_loss = q_real_loss + q_fake_loss
+def q_loss_fun(disc_code_est, disc_code_tg, cont_code_est, cont_code_tg):
+    q_disc_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+        labels=disc_code_tg, logits=disc_code_est))
+    q_cont_loss = tf.reduce_mean(tf.reduce_sum(
+        tf.square(cont_code_tg - cont_code_est), axis=1))
+    q_loss = q_disc_loss + q_cont_loss
     return q_loss
+
 
 g_optimizer = keras.optimizers.Adam(lr=5 * opt.lr, beta_1=0.5)
 d_optimizer = keras.optimizers.Adam(lr=opt.lr, beta_1=0.5)
@@ -167,36 +167,48 @@ checkpoint = tf.train.Checkpoint(step=tf.Variable(0),
                                               generator=g,
                                               discriminator=d,
                                               classifier=c)
-
+def conv_cond_concat(x, y):
+    """Concatenate conditioning vector on feature map axis."""
+    x_shapes = tf.shape(x)
+    y_shapes = tf.shape(y)
+    y = tf.reshape(y, [-1, 1, 1, y_shapes[1]])
+    y_shapes = tf.shape(y)
+    return tf.concat([x, y*tf.ones([x_shapes[0], x_shapes[1], x_shapes[2], y_shapes[3]])], 3)
 @tf.function
 def train_step(batch_images,batch_labels):
     z = get_random_z(opt.latent_dim, batch_images.shape[0])
-    z_y = tf.concat([z, batch_labels], 1)
-    real_images = batch_images
+    code = get_random_z(len_continuous_code, batch_images.shape[0])
+    batch_codes = tf.concat((batch_labels, code), axis=1)
+    batch_z = tf.concat([z, batch_codes], 1)
+    real_images = conv_cond_concat(batch_images, batch_codes)
 
     with tf.GradientTape() as g_tape, tf.GradientTape() as d_tape, tf.GradientTape() as q_tape:
-      fake_imgs = g(z_y, training=True)
+      fake_imgs = g(batch_z, training=True)
+      fake_imgs = conv_cond_concat(fake_imgs, batch_codes)
 
-      _, d_fake_logits, input4classifier_fake = d(fake_imgs, training=True)
-      _, d_real_logits, input4classifier_real = d(real_images, training=True)
+      d_fake, d_fake_logits, input4classifier_fake = d(fake_imgs, training=True)
+      d_real, d_real_logits, input4classifier_real = d(real_images, training=True)
 
       g_loss = generator_loss(d_fake_logits)
       d_loss = discriminator_loss(d_real_logits, d_fake_logits)
 
       code_fake, code_logit_fake = c(input4classifier_fake, training=True)
-      code_real, code_logit_real = c(input4classifier_real, training=True)
-      q_loss = q_loss_fun(code_logit_real, code_logit_fake, batch_labels)
+
+      disc_code_est = code_logit_fake[:, :len_discrete_code]
+      disc_code_tg = batch_codes[:, :len_discrete_code]
+      cont_code_est = code_logit_fake[:, len_discrete_code:]
+      cont_code_tg = batch_codes[:, len_discrete_code:]
+      q_loss = q_loss_fun(disc_code_est, disc_code_tg, cont_code_est, cont_code_tg)
 
     gradients_of_d = d_tape.gradient(d_loss, d.trainable_variables)
     gradients_of_g = g_tape.gradient(g_loss, g.trainable_variables)
-    # q loss backprop to all the trainable-variables
+    gradients_of_q = q_tape.gradient(q_loss, c.trainable_variables)
 
-    trainable_variables_q = c.trainable_variables + d.trainable_variables + g.trainable_variables
-    gradients_q = q_tape.gradient(q_loss, trainable_variables_q)
+
 
     d_optimizer.apply_gradients(zip(gradients_of_d, d.trainable_variables))
     g_optimizer.apply_gradients(zip(gradients_of_g, g.trainable_variables))
-    q_optimizer.apply_gradients(zip(gradients_q, trainable_variables_q))
+    q_optimizer.apply_gradients(zip(gradients_of_q, c.trainable_variables))
     return g_loss, d_loss, q_loss
 
 # ----------
