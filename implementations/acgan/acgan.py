@@ -50,8 +50,8 @@ class Discriminator(tf.keras.Model):
         self.is_training = is_training
         self.conv_1 = layers.Conv2D(64, 4,strides=2, padding='same')
         self.conv_2 = layers.Conv2D(128, 4,strides=2, padding='same')
-        self.bn_1 = layers.BatchNormalization()
-        self.bn_2 = layers.BatchNormalization()
+        self.bn_1 = layers.BatchNormalization(trainable=self.is_training)
+        self.bn_2 = layers.BatchNormalization(trainable=self.is_training)
         self.fc_1 = layers.Dense(1024)
         self.fc_2 = layers.Dense(1)
 
@@ -76,9 +76,9 @@ class Generator(tf.keras.Model):
         self.is_training = is_training
         self.fc_1 = layers.Dense(1024)
         self.fc_2 = layers.Dense(128*7*7)
-        self.bn_1 = layers.BatchNormalization()
-        self.bn_2 = layers.BatchNormalization()
-        self.bn_3 = layers.BatchNormalization()
+        self.bn_1 = layers.BatchNormalization(trainable=self.is_training)
+        self.bn_2 = layers.BatchNormalization(trainable=self.is_training)
+        self.bn_3 = layers.BatchNormalization(trainable=self.is_training)
         self.up_conv_1 = layers.Conv2DTranspose(64, 4, 2,padding='same')
         self.up_conv_2 = layers.Conv2DTranspose(1, 4, 2,padding='same')
 
