@@ -110,7 +110,6 @@ def train_step(images):
       # Adversarial ground truths
       g_target = 1 / (opt.batch_size * 2)
       d_target = 1 / opt.batch_size
-
       # Calculate loss of discriminator and update
       d_loss = d_target * tf.reduce_sum(real_output) + log(Z)
 
