@@ -8,6 +8,7 @@ Collection of TensorFlow2 implementations of Generative Adversarial Network vari
 ## Table of Contents
   * [Installation](#installation)
   * [Implementations](#implementations)
+    + [Adversarial Autoencoder](#adversarial-autoencoder)
     + [Auxiliary Classifier GAN](#auxiliary-classifier-gan)
     + [BEGAN](#began)
     + [Boundary-Seeking GAN](#boundary-seeking-gan)
@@ -26,7 +27,6 @@ Collection of TensorFlow2 implementations of Generative Adversarial Network vari
     + [Wasserstein GAN](#wasserstein-gan)
     + [Wasserstein GAN GP](#wasserstein-gan-gp)
   * TODO
-    + [Adversarial Autoencoder](#adversarial-autoencoder)
     + [BicycleGAN](#bicyclegan)
     + [Cluster GAN](#cluster-gan)
     + [Context-Conditional GAN](#context-conditional-gan)
