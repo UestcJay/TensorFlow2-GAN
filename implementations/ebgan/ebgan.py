@@ -49,7 +49,7 @@ def pullaway_loss(embeddings):
 (train_x, _), (_, _) = tf.keras.datasets.mnist.load_data()
 train_x= train_x.reshape(train_x.shape[0], 28, 28, 1).astype('float32')
 BUFFER_SIZE=train_x.shape[0]
-train_x = (train_x - 127.5) / 127.5
+train_x = train_x/255.
 train_ds = tf.data.Dataset.from_tensor_slices(train_x).shuffle(BUFFER_SIZE).batch(opt.batch_size)
 num_examples_to_generate = 16
 

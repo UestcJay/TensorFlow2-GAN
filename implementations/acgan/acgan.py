@@ -33,7 +33,7 @@ img_shape = (opt.img_size, opt.img_size, opt.channels)
 # data load & preprocessing
 (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.mnist.load_data()
 BUFFER_SIZE=train_images.shape[0]
-train_images= (train_images - 127.5) / 127.5
+train_images= train_images / 255.0
 train_images = train_images.reshape(train_images.shape[0], 28, 28, 1).astype('float32')
 train_labels=tf.one_hot(train_labels,depth=10)
 train_dataset = tf.data.Dataset.from_tensor_slices((train_images, train_labels)).shuffle(BUFFER_SIZE).batch(opt.batch_size,drop_remainder=True)
